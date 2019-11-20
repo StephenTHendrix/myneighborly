@@ -1,0 +1,30 @@
+var express = require('express')
+var cors = require('cors')
+var bodyParser = require('body-parser')
+var app = express()
+var PORT = process.env.PORT || 5000
+
+app.use(bodyParser.json())
+app.use(cors())
+app.use(
+  bodyParser.urlencoded({
+    extended: false
+  })
+)
+
+var Users = require('./routes/Users')
+
+app.use('/users', Users)
+
+const db = require("./models");
+
+db.sequelize.sync().then(() => {
+  // inside our db sync callback, we start the server.
+  // this is our way of making sure the server is not listening
+  // to requests if we have not yet made a db connection
+  app.listen(PORT, () => {
+    console.log(`App listening on PORT ${PORT}`);
+  });
+});
+
+
