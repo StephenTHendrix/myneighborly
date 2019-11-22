@@ -15,7 +15,6 @@ class Profile extends Component {
     }
   }
   
-
   loadEvents = () => {
     getEvents().then(res => {
       console.log('Profile: ', res)
