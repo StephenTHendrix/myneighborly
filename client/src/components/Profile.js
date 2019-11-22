@@ -14,6 +14,7 @@ class Profile extends Component {
       events: []
     }
   }
+  
 
   loadEvents = () => {
     getEvents().then(res => {
