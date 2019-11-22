@@ -3,7 +3,7 @@
 
 
 module.exports = function(sequelize, DataTypes) {
-  var User = sequelize.define("user", {
+  var User = sequelize.define("User", {
     // Giving the Author model a name of type STRING
     id: {
       type: DataTypes.INTEGER,
@@ -30,6 +30,7 @@ module.exports = function(sequelize, DataTypes) {
   {
     timestamps: false
   }
+  
   );
 
   
