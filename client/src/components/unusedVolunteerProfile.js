@@ -14,32 +14,35 @@ class Profile extends Component {
       events: []
     }
   }
-  
+
   loadEvents = () => {
     getEvents().then(res => {
       console.log('Profile: ', res)
-      
 
-        {typeof res.data === "string" ? (
-        this.setState({
-          events: [],
-        })) : (
+
+      {
+        typeof res.data === "string" ? (
           this.setState({
-            events: res.data,
-          })
-        )}
-      
-        
-        console.log(this.state.events)
-      })
+
+            events: [],
+          })) : (
+            this.setState({
+              events: res.data,
+            })
+          )
+      }
+
+      console.log(this.state.events)
+    })
       .catch(err => console.log(err));
   }
-  
+
 
   componentDidMount() {
     this.loadEvents();
     const token = localStorage.usertoken
     const decoded = jwt_decode(token)
+    console.log('DECODED', decoded)
     this.setState({
       first_name: decoded.first_name,
       last_name: decoded.last_name,
@@ -72,13 +75,13 @@ class Profile extends Component {
           </table>
         </div>
         {this.state.events.length ?
-        (
-          <div>{this.state.events.map(event => (
-              <EventCard key={event.id} title = {event.title} description = {event.description}>
-                
-                
-               
-                
+          (
+            <div>{this.state.events.map(event => (
+              <EventCard key={event.id} title={event.title} description={event.description}>
+
+
+
+
               </EventCard>
             ))}
             </div>) : (<h3>No events found.</h3>)

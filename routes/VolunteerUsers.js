@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const db = require("../models")
 users.use(cors())
+require('cookie-parser')
 
 process.env.SECRET_KEY = 'secret'
 
@@ -14,13 +15,20 @@ users.post('/register', (req, res) => {
   const userData = {
     first_name: req.body.first_name,
     last_name: req.body.last_name,
+    kind: 'volunteer',
     email: req.body.email,
     password: req.body.password,
     created: today
   }
 
   const volunteerData = {
-    city: req.body.city
+    city: req.body.city,
+    state: req.body.state,
+    zip: req.body.zip,
+    dob: req.body.dob,
+    bio: req.body.bio,
+    gender: req.body.gender,
+    image: req.body.image
   }
 
   const newUser =
@@ -37,25 +45,33 @@ users.post('/register', (req, res) => {
         if (!user) {
           bcrypt.hash(req.body.password, 10, (err, hash) => {
             userData.password = hash
-            db.User.create(userData)
-
+            db.User.create(userData).then(newUser => db.Volunteer.create({ ...volunteerData, "UserId": newUser.id }))
           })
         } else {
           res.json({ error: 'User already exists' })
         }
       })
 
-  const newVolunteer = db.Volunteer.create(volunteerData)
+});
 
-  Promise
-    .all([newUser, newVolunteer])
-    .then(responses => {
-      console.log("Rows Inserted")
+users.get("/data", function (req, res) {
+  const userToken = req.cookies.userToken;
+  var decoded = jwt.verify(userToken, process.env.SECRET_KEY)
+  console.log(decoded)
+
+  db.Volunteer.findOne({
+    where: {
+      UserId: decoded.id
+    }
+  })
+    .then(volunteer => {
+      console.log(volunteer);
+      res.json(volunteer);
     })
     .catch(err => {
-      console.log(err);
-    });
-});
+      res.send('error: ' + err)
+    })
+})
 
 users.post('/login', (req, res) => {
   db.User.findOne({

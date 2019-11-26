@@ -1,11 +1,42 @@
 import React, { Component } from 'react'
 import { Link, withRouter } from 'react-router-dom'
+import { login } from "./UserFunctions";
 
 class Landing extends Component {
+  constructor() {
+    super();
+    this.state = {
+      email: "",
+      password: "",
+      errors: {}
+    };
+
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+
+  onChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
+  }
+  onSubmit(e) {
+    e.preventDefault();
+
+    const user = {
+      email: this.state.email,
+      password: this.state.password
+    };
+
+    login(user).then(res => {
+      if (res) {
+        this.props.history.push(`/profile`);
+      }
+    });
+  }
+
   logOut(e) {
-    e.preventDefault()
-    localStorage.removeItem('usertoken')
-    this.props.history.push(`/`)
+    e.preventDefault();
+    localStorage.removeItem("usertoken");
+    this.props.history.push(`/`);
   }
 
   render() {
@@ -17,12 +48,66 @@ class Landing extends Component {
           </Link>
         </li>
         <li className="nav-item">
-          <Link to="/register" className="nav-link">
-            Register
+          <div className="dropdown">
+            <button
+              class="btn dropdown-toggle"
+              type="button"
+              id="dropdownMenuButton"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Login
+            </button>
+            <form
+              className="dropdown-menu dropdown-menu-right"
+              noValidate
+              onSubmit={this.onSubmit}
+            >
+              <h1 className="h3 mb-3 text-block-small">Please sign in</h1>
+              <div className="form-group">
+                <label htmlFor="email">Email address</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  name="email"
+                  placeholder="Enter email"
+                  value={this.state.email}
+                  onChange={this.onChange}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="password">Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  name="password"
+                  placeholder="Password"
+                  value={this.state.password}
+                  onChange={this.onChange}
+                />
+              </div>
+              <button
+                type="submit"
+                className="btn btn-primary"
+              >
+                Sign in
+              </button>
+            </form>
+          </div>
+        </li>
+        <li className="nav-item">
+          <Link to="/volunteer/signup" className="nav-link">
+            Sign Up As Volunteer
+          </Link>
+        </li>
+        <li className="nav-item">
+          <Link to="/seeker/signup" className="nav-link">
+            Sign Up As Seeker
           </Link>
         </li>
       </ul>
-    )
+    );
 
     const userLink = (
       <ul className="navbar-nav">
@@ -37,25 +122,25 @@ class Landing extends Component {
           </a>
         </li>
       </ul>
-    )
+    );
 
     return (
       <nav className="navbar navbar-expand-lg">
         <button
-          className="navbar-toggler"
+          className=" custom-toggler navbar-toggler"
           type="button"
           data-toggle="collapse"
-          data-target="#navbarsExample10"
-          aria-controls="navbarsExample10"
+          data-target="#navbarNeighborly"
+          aria-controls="navbarNeighborly"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span className="navbar-toggler-icon" />
+          <span className=" custom-toggler navbar-toggler-icon" />
         </button>
 
         <div
           className="collapse navbar-collapse justify-content-md-end"
-          id="navbarsExample10"
+          id="navbarNeighborly"
         >
           <ul className="navbar-nav">
             <li className="nav-item">
@@ -67,7 +152,7 @@ class Landing extends Component {
           {localStorage.usertoken ? userLink : loginRegLink}
         </div>
       </nav>
-    )
+    );
   }
 }
 

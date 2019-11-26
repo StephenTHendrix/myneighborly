@@ -14,6 +14,7 @@ users.post('/register', (req, res) => {
   const userData = {
     first_name: req.body.first_name,
     last_name: req.body.last_name,
+    kind: req.body.kind,
     email: req.body.email,
     password: req.body.password,
     created: today
@@ -69,6 +70,9 @@ users.post('/login', (req, res) => {
           let token = jwt.sign(user.dataValues, process.env.SECRET_KEY, {
             expiresIn: 1440
           })
+          jwt.decode(token, {})
+          res.cookie('userToken', token, { maxAge: 3600000, httpOnly: true });
+          console.log()
           res.send(token)
         }
       } else {

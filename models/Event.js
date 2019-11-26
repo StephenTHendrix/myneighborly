@@ -8,7 +8,7 @@ module.exports = function (sequelize, DataTypes) {
             }
         },
         link: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
         },
         description: {
             type: DataTypes.STRING(10000),
@@ -68,6 +68,15 @@ module.exports = function (sequelize, DataTypes) {
             type: DataTypes.STRING
         }
     });
+
+    Event.associate = (models) => {
+        Event.belongsTo(models.User, {
+            foreignKey: {
+                // allowNull: false
+            }
+        });
+    };
+
     return Event;
 };
 
